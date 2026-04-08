@@ -86,12 +86,21 @@ function formatPrice(value) {
 
 function openModal(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.remove("hidden");
+  if (el) {
+    el.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
 }
 
 function closeModal(id) {
   const el = document.getElementById(id);
-  if (el) el.classList.add("hidden");
+  if (el) {
+    el.classList.add("hidden");
+    const anyOpenModal = document.querySelector(".modal:not(.hidden), .drawer:not(.hidden)");
+    if (!anyOpenModal) {
+      document.body.style.overflow = "";
+    }
+  }
 }
 
 function getFilteredProducts() {
@@ -175,8 +184,8 @@ function renderProducts() {
           </div>
 
           <div class="product-actions">
-            <button class="btn btn-light details-btn" data-id="${product.id}">التفاصيل</button>
-            <button class="btn btn-dark add-btn" data-id="${product.id}">اطلب الآن</button>
+            <button class="btn btn-light details-btn" data-id="${product.id}" type="button">التفاصيل</button>
+            <button class="btn btn-dark add-btn" data-id="${product.id}" type="button">اطلب الآن</button>
           </div>
         </div>
       </div>
@@ -217,8 +226,8 @@ function showProductDetails(product) {
         </div>
 
         <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
-          <button id="modalAddToCart" class="btn btn-dark">أضف إلى السلة</button>
-          <button class="btn btn-light" data-close="productModal">إغلاق</button>
+          <button id="modalAddToCart" class="btn btn-dark" type="button">أضف إلى السلة</button>
+          <button class="btn btn-light" data-close="productModal" type="button">إغلاق</button>
         </div>
       </div>
     </div>
@@ -426,7 +435,10 @@ async function submitOrder(event) {
     state.cart = [];
     renderCart();
 
-    els.orderForm.reset();
+    if (els.orderForm) {
+      els.orderForm.reset();
+    }
+
     closeModal("checkoutModal");
     closeModal("cartDrawer");
   } catch (error) {
