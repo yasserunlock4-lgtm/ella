@@ -167,27 +167,43 @@ function formatPrice(value) {
   return `${Number(value || 0).toLocaleString("en-US")} د.ع`;
 }
 
+function normalizePoints(points) {
+  if (Array.isArray(points)) return points;
+  if (points && typeof points === "object") {
+    return Object.values(points);
+  }
+  return fallbackSettings.partnerProgram.points;
+}
+
 function openModal(id) {
-  document.getElementById(id).classList.remove("hidden");
+  const el = document.getElementById(id);
+  if (el) el.classList.remove("hidden");
 }
 
 function closeModal(id) {
-  document.getElementById(id).classList.add("hidden");
+  const el = document.getElementById(id);
+  if (el) el.classList.add("hidden");
 }
 
 function getFilteredProducts() {
   if (state.activeCategory === "الكل") return state.products;
-  return state.products.filter(p => p.category === state.activeCategory);
+  return state.products.filter((p) => p.category === state.activeCategory);
 }
 
 function renderFilters() {
-  els.categoryFilters.innerHTML = categories.map(category => `
-    <button class="filter-btn ${state.activeCategory === category ? "active" : ""}" data-category="${category}">
-      ${category}
-    </button>
-  `).join("");
+  if (!els.categoryFilters) return;
 
-  els.categoryFilters.querySelectorAll(".filter-btn").forEach(btn => {
+  els.categoryFilters.innerHTML = categories
+    .map(
+      (category) => `
+      <button class="filter-btn ${state.activeCategory === category ? "active" : ""}" data-category="${category}">
+        ${category}
+      </button>
+    `
+    )
+    .join("");
+
+  els.categoryFilters.querySelectorAll(".filter-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.activeCategory = btn.dataset.category;
       renderFilters();
@@ -197,6 +213,8 @@ function renderFilters() {
 }
 
 function renderProducts() {
+  if (!els.productsGrid) return;
+
   const products = getFilteredProducts();
 
   if (!products.length) {
@@ -204,52 +222,56 @@ function renderProducts() {
     return;
   }
 
-  els.productsGrid.innerHTML = products.map(product => `
-    <div class="product-card">
-      <div class="product-image">${product.emoji || "🧴"}</div>
+  els.productsGrid.innerHTML = products
+    .map(
+      (product) => `
+      <div class="product-card">
+        <div class="product-image">${product.emoji || "🧴"}</div>
 
-      <div class="product-meta">
-        <span class="badge ${product.featured ? "featured" : ""}">${product.badge || ""}</span>
-        <span class="category-text">${product.category || ""}</span>
-      </div>
+        <div class="product-meta">
+          <span class="badge ${product.featured ? "featured" : ""}">${product.badge || ""}</span>
+          <span class="category-text">${product.category || ""}</span>
+        </div>
 
-      <h3 class="product-title">${product.name}</h3>
-      <p class="product-desc">${product.desc || ""}</p>
+        <h3 class="product-title">${product.name}</h3>
+        <p class="product-desc">${product.desc || ""}</p>
 
-      <div class="product-bottom">
-        <div>
-          <div class="price-label">السعر</div>
-          <div class="prices">
-            <div class="price">${formatPrice(product.price)}</div>
-            <div class="old-price">${formatPrice(product.oldPrice || 0)}</div>
+        <div class="product-bottom">
+          <div>
+            <div class="price-label">السعر</div>
+            <div class="prices">
+              <div class="price">${formatPrice(product.price)}</div>
+              <div class="old-price">${formatPrice(product.oldPrice || 0)}</div>
+            </div>
+          </div>
+
+          <div class="product-actions">
+            <button class="btn btn-light details-btn" data-id="${product.id}">التفاصيل</button>
+            <button class="btn btn-dark add-btn" data-id="${product.id}">اطلب الآن</button>
           </div>
         </div>
-
-        <div class="product-actions">
-          <button class="btn btn-light details-btn" data-id="${product.id}">التفاصيل</button>
-          <button class="btn btn-dark add-btn" data-id="${product.id}">اطلب الآن</button>
-        </div>
       </div>
-    </div>
-  `).join("");
+    `
+    )
+    .join("");
 
-  els.productsGrid.querySelectorAll(".details-btn").forEach(btn => {
+  els.productsGrid.querySelectorAll(".details-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const product = state.products.find(p => String(p.id) === btn.dataset.id);
+      const product = state.products.find((p) => String(p.id) === btn.dataset.id);
       showProductDetails(product);
     });
   });
 
-  els.productsGrid.querySelectorAll(".add-btn").forEach(btn => {
+  els.productsGrid.querySelectorAll(".add-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const product = state.products.find(p => String(p.id) === btn.dataset.id);
+      const product = state.products.find((p) => String(p.id) === btn.dataset.id);
       addToCart(product);
     });
   });
 }
 
 function showProductDetails(product) {
-  if (!product) return;
+  if (!product || !els.productModalContent) return;
 
   const minimum = state.settings?.partnerProgram?.minimumPurchase || 100000;
 
@@ -267,11 +289,15 @@ function showProductDetails(product) {
           <div class="old-price">${formatPrice(product.oldPrice || 0)}</div>
         </div>
 
-        ${product.featured ? `
+        ${
+          product.featured
+            ? `
           <div class="notice">
             هذا المنتج يؤهلك للدخول إلى برنامج شركاء المبيعات إذا وصل مجموع شرائك إلى ${formatPrice(minimum)} وكنت من أول 50 شخص.
           </div>
-        ` : ""}
+        `
+            : ""
+        }
 
         <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
           <button id="modalAddToCart" class="btn btn-dark">أضف إلى السلة</button>
@@ -288,27 +314,34 @@ function showProductDetails(product) {
     closeModal("productModal");
   });
 
-  els.productModalContent.querySelectorAll("[data-close='productModal']").forEach(btn => {
+  els.productModalContent.querySelectorAll("[data-close='productModal']").forEach((btn) => {
     btn.addEventListener("click", () => closeModal("productModal"));
   });
 }
 
 function renderPartnerModal() {
-  const program = state.settings?.partnerProgram || fallbackSettings.partnerProgram;
-  const points = program.points || [];
+  if (!els.partnerPoints) return;
 
-  els.partnerPoints.innerHTML = points.map(point => `
-    <div class="partner-point">
-      <div class="partner-check">✓</div>
-      <div>${point}</div>
-    </div>
-  `).join("");
+  const program = state.settings?.partnerProgram || fallbackSettings.partnerProgram;
+  const points = normalizePoints(program.points);
+
+  els.partnerPoints.innerHTML = points
+    .map(
+      (point) => `
+      <div class="partner-point">
+        <div class="partner-check">✓</div>
+        <div>${point}</div>
+      </div>
+    `
+    )
+    .join("");
 }
 
 function addToCart(product) {
   if (!product) return;
 
-  const existing = state.cart.find(item => item.id === product.id);
+  const existing = state.cart.find((item) => item.id === product.id);
+
   if (existing) {
     existing.qty += 1;
   } else {
@@ -320,33 +353,42 @@ function addToCart(product) {
 }
 
 function renderCart() {
+  if (!els.cartItems || !els.cartTotal || !els.cartPartnerNote || !els.cartCount) return;
+
   els.cartCount.textContent = state.cart.reduce((sum, item) => sum + item.qty, 0);
 
   if (!state.cart.length) {
     els.cartItems.innerHTML = `<div class="empty-cart">السلة فارغة حاليًا</div>`;
   } else {
-    els.cartItems.innerHTML = state.cart.map(item => `
-      <div class="cart-item">
-        <div class="cart-item-head">
-          <div>
-            <div class="cart-item-title">${item.name}</div>
-            <div class="cart-item-sub">الكمية: ${item.qty}</div>
+    els.cartItems.innerHTML = state.cart
+      .map(
+        (item) => `
+        <div class="cart-item">
+          <div class="cart-item-head">
+            <div>
+              <div class="cart-item-title">${item.name}</div>
+              <div class="cart-item-sub">الكمية: ${item.qty}</div>
+            </div>
+            <div class="price" style="font-size:22px;">${formatPrice(item.price * item.qty)}</div>
           </div>
-          <div class="price" style="font-size:22px;">${formatPrice(item.price * item.qty)}</div>
         </div>
-      </div>
-    `).join("");
+      `
+      )
+      .join("");
   }
 
-  const total = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const total = state.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   els.cartTotal.textContent = formatPrice(total);
 
   const minimum = state.settings?.partnerProgram?.minimumPurchase || 100000;
+
   if (total >= minimum) {
-    els.cartPartnerNote.textContent = "هذا الطلب مؤهل مبدئيًا لعرض الشراكة لأن مجموع السلة 100,000 د.ع أو أكثر.";
+    els.cartPartnerNote.textContent =
+      "هذا الطلب مؤهل مبدئيًا لعرض الشراكة لأن مجموع السلة 100,000 د.ع أو أكثر.";
     els.cartPartnerNote.classList.add("good");
   } else {
-    els.cartPartnerNote.textContent = "إذا وصل مجموع طلبك إلى 100,000 د.ع أو أكثر، يمكنك التقديم على عرض الشراكة.";
+    els.cartPartnerNote.textContent =
+      "إذا وصل مجموع طلبك إلى 100,000 د.ع أو أكثر، يمكنك التقديم على عرض الشراكة.";
     els.cartPartnerNote.classList.remove("good");
   }
 }
@@ -354,6 +396,7 @@ function renderCart() {
 async function loadProductsFromRealtimeDB() {
   try {
     const snapshot = await get(child(ref(db), "products"));
+
     if (!snapshot.exists()) return fallbackProducts;
 
     const data = snapshot.val();
@@ -380,16 +423,18 @@ async function loadProductsFromRealtimeDB() {
 async function loadSettingsFromRealtimeDB() {
   try {
     const snapshot = await get(child(ref(db), "settings/store"));
+
     if (!snapshot.exists()) return fallbackSettings;
 
     const data = snapshot.val();
+
     return {
       partnerProgram: {
         title: data.partnerProgram?.title || fallbackSettings.partnerProgram.title,
         subtitle: data.partnerProgram?.subtitle || fallbackSettings.partnerProgram.subtitle,
         minimumPurchase: Number(data.partnerProgram?.minimumPurchase || 100000),
         duration: data.partnerProgram?.duration || "6 أشهر",
-        points: data.partnerProgram?.points || fallbackSettings.partnerProgram.points
+        points: normalizePoints(data.partnerProgram?.points)
       }
     };
   } catch (error) {
@@ -399,7 +444,7 @@ async function loadSettingsFromRealtimeDB() {
 }
 
 async function init() {
-  els.loadingBox.style.display = "block";
+  if (els.loadingBox) els.loadingBox.style.display = "block";
 
   if (hasFirebaseConfig) {
     state.products = await loadProductsFromRealtimeDB();
@@ -414,7 +459,7 @@ async function init() {
   renderPartnerModal();
   renderCart();
 
-  els.loadingBox.style.display = "none";
+  if (els.loadingBox) els.loadingBox.style.display = "none";
 }
 
 document.addEventListener("click", (e) => {
