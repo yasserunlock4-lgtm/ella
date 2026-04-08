@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Ella Store | متجر إيلا</title>
   <meta name="description" content="متجر إيلا للكوزمتك" />
   <link rel="stylesheet" href="style.css" />
@@ -24,7 +24,7 @@
       </nav>
 
       <div class="topbar-actions">
-        <button id="cartBtn" class="btn btn-dark">
+        <button id="cartBtn" class="btn btn-dark" type="button">
           السلة <span id="cartCount">0</span>
         </button>
       </div>
@@ -78,6 +78,7 @@
     </section>
   </main>
 
+  <!-- Product Modal -->
   <div id="productModal" class="modal hidden">
     <div class="modal-backdrop" data-close="productModal"></div>
     <div class="modal-box">
@@ -86,6 +87,7 @@
     </div>
   </div>
 
+  <!-- Cart Drawer -->
   <div id="cartDrawer" class="drawer hidden">
     <div class="drawer-backdrop" data-close="cartDrawer"></div>
     <aside class="drawer-panel">
@@ -111,6 +113,7 @@
     </aside>
   </div>
 
+  <!-- Checkout Modal -->
   <div id="checkoutModal" class="modal hidden">
     <div class="modal-backdrop" data-close="checkoutModal"></div>
 
