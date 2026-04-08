@@ -1,10 +1,9 @@
 import {
   db,
   hasFirebaseConfig,
-  collection,
-  getDocs,
-  doc,
-  getDoc
+  ref,
+  get,
+  child
 } from "./firebase-config.js";
 
 const fallbackProducts = [
@@ -352,42 +351,38 @@ function renderCart() {
   }
 }
 
-async function loadProductsFromFirestore() {
+async function loadProductsFromRealtimeDB() {
   try {
-    const productsRef = collection(db, "products");
-    const snap = await getDocs(productsRef);
+    const snapshot = await get(child(ref(db), "products"));
+    if (!snapshot.exists()) return fallbackProducts;
 
-    if (snap.empty) return fallbackProducts;
+    const data = snapshot.val();
+    const items = Object.values(data || {}).map((item, index) => ({
+      id: item.id || index + 1,
+      name: item.name || "",
+      price: Number(item.price || 0),
+      oldPrice: Number(item.oldPrice || 0),
+      desc: item.desc || "",
+      details: item.details || item.desc || "",
+      badge: item.badge || "",
+      category: item.category || "الكل",
+      emoji: item.emoji || "🧴",
+      featured: Boolean(item.featured)
+    }));
 
-    return snap.docs.map((d, index) => {
-      const data = d.data();
-      return {
-        id: data.id || index + 1,
-        name: data.name || "",
-        price: Number(data.price || 0),
-        oldPrice: Number(data.oldPrice || 0),
-        desc: data.desc || "",
-        details: data.details || data.desc || "",
-        badge: data.badge || "",
-        category: data.category || "الكل",
-        emoji: data.emoji || "🧴",
-        featured: Boolean(data.featured)
-      };
-    });
+    return items.length ? items : fallbackProducts;
   } catch (error) {
-    console.error("Firestore products error:", error);
+    console.error("Realtime DB products error:", error);
     return fallbackProducts;
   }
 }
 
-async function loadSettingsFromFirestore() {
+async function loadSettingsFromRealtimeDB() {
   try {
-    const settingsRef = doc(db, "settings", "store");
-    const snap = await getDoc(settingsRef);
+    const snapshot = await get(child(ref(db), "settings/store"));
+    if (!snapshot.exists()) return fallbackSettings;
 
-    if (!snap.exists()) return fallbackSettings;
-
-    const data = snap.data();
+    const data = snapshot.val();
     return {
       partnerProgram: {
         title: data.partnerProgram?.title || fallbackSettings.partnerProgram.title,
@@ -398,7 +393,7 @@ async function loadSettingsFromFirestore() {
       }
     };
   } catch (error) {
-    console.error("Firestore settings error:", error);
+    console.error("Realtime DB settings error:", error);
     return fallbackSettings;
   }
 }
@@ -407,8 +402,8 @@ async function init() {
   els.loadingBox.style.display = "block";
 
   if (hasFirebaseConfig) {
-    state.products = await loadProductsFromFirestore();
-    state.settings = await loadSettingsFromFirestore();
+    state.products = await loadProductsFromRealtimeDB();
+    state.settings = await loadSettingsFromRealtimeDB();
   } else {
     state.products = fallbackProducts;
     state.settings = fallbackSettings;
