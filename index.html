@@ -48,7 +48,7 @@
 
           <div class="hero-actions">
             <a href="#products" class="btn btn-primary">تسوقي الآن</a>
-            <button id="cartBtnHero" class="btn btn-light">فتح السلة</button>
+            <button id="cartBtnHero" class="btn btn-light" type="button">فتح السلة</button>
           </div>
         </div>
 
@@ -78,22 +78,20 @@
     </section>
   </main>
 
-  <!-- Product Modal -->
   <div id="productModal" class="modal hidden">
     <div class="modal-backdrop" data-close="productModal"></div>
     <div class="modal-box">
-      <button class="modal-close" data-close="productModal">✕</button>
+      <button class="modal-close" data-close="productModal" type="button">✕</button>
       <div id="productModalContent"></div>
     </div>
   </div>
 
-  <!-- Cart Drawer -->
   <div id="cartDrawer" class="drawer hidden">
     <div class="drawer-backdrop" data-close="cartDrawer"></div>
     <aside class="drawer-panel">
       <div class="drawer-head">
         <h3>سلة الشراء</h3>
-        <button class="modal-close" data-close="cartDrawer">✕</button>
+        <button class="modal-close" data-close="cartDrawer" type="button">✕</button>
       </div>
 
       <div id="cartItems" class="cart-items"></div>
@@ -108,57 +106,68 @@
       </div>
 
       <div class="cart-actions">
-        <button id="checkoutBtn" class="btn btn-primary btn-full">إتمام الطلب</button>
+        <button id="checkoutBtn" class="btn btn-primary btn-full" type="button">إتمام الطلب</button>
       </div>
     </aside>
   </div>
 
-  <!-- Checkout Modal -->
   <div id="checkoutModal" class="modal hidden">
     <div class="modal-backdrop" data-close="checkoutModal"></div>
-    <div class="modal-box">
-      <button class="modal-close" data-close="checkoutModal">✕</button>
+
+    <div class="modal-box checkout-modal-box">
+      <button class="modal-close checkout-close" data-close="checkoutModal" type="button">✕</button>
+
       <div class="checkout-content">
-        <div class="section-kicker">إتمام الطلب</div>
-        <h3 style="margin-top:8px;font-size:32px;font-weight:900;">بيانات الزبون</h3>
+        <div class="checkout-head">
+          <div class="section-kicker">إتمام الطلب</div>
+          <h3>بيانات الزبون</h3>
+          <p>املئي البيانات التالية لإرسال الطلب إلى المتجر.</p>
+        </div>
 
         <form id="orderForm" class="order-form">
           <div class="form-grid">
             <div class="form-group">
-              <label>الاسم الكامل</label>
+              <label for="customerName">الاسم الكامل</label>
               <input type="text" id="customerName" required />
             </div>
 
             <div class="form-group">
-              <label>رقم الهاتف</label>
+              <label for="customerPhone">رقم الهاتف</label>
               <input type="text" id="customerPhone" required />
             </div>
 
             <div class="form-group">
-              <label>المحافظة</label>
+              <label for="customerGovernorate">المحافظة</label>
               <input type="text" id="customerGovernorate" required />
             </div>
 
             <div class="form-group">
-              <label>المنطقة</label>
+              <label for="customerArea">المنطقة</label>
               <input type="text" id="customerArea" required />
             </div>
           </div>
 
-          <div class="form-group">
-            <label>تفاصيل إضافية</label>
-            <textarea id="customerDetails" rows="4" placeholder="ملاحظات، أقرب نقطة دالة، لون، قياس..."></textarea>
+          <div class="form-group form-group-full">
+            <label for="customerDetails">تفاصيل إضافية</label>
+            <textarea
+              id="customerDetails"
+              rows="5"
+              placeholder="ملاحظات، أقرب نقطة دالة، لون، قياس..."
+            ></textarea>
           </div>
 
           <div class="checkout-summary">
-            <div class="cart-total-row">
+            <div class="checkout-summary-row">
               <span>إجمالي الطلب</span>
               <strong id="checkoutTotal">0 د.ع</strong>
             </div>
-            <div id="checkoutDiscountText" class="cart-note hidden"></div>
+
+            <div id="checkoutDiscountText" class="checkout-discount hidden"></div>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-full">إرسال الطلب</button>
+          <button type="submit" class="btn btn-primary btn-full checkout-submit">
+            إرسال الطلب
+          </button>
         </form>
       </div>
     </div>
