@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ella Store | متجر إيلا</title>
-  <meta name="description" content="متجر إيلا للكوزمتك مع برنامج شركاء المبيعات" />
+  <meta name="description" content="متجر إيلا للكوزمتك" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -21,7 +21,6 @@
       <nav class="desktop-nav">
         <a href="#hero">الرئيسية</a>
         <a href="#products">المنتجات</a>
-        <a href="#partner-banner">الشراكة</a>
       </nav>
 
       <div class="topbar-actions">
@@ -38,18 +37,18 @@
         <div class="hero-content">
           <span class="pill">متجر إيلا للكوزمتك</span>
           <h1>
-            متجر كوزمتك أنيق
+            منتجات كوزمتك أنيقة
             <br />
-            مع فرصة <span class="accent">شراكة مبيعات</span>
+            <span class="accent">وعروض خصم جاهزة</span>
           </h1>
           <p>
-            تصفحي المنتجات بشكل طبيعي داخل المتجر، وإذا أحببتِ تطوير تجربتك أكثر
-            فهناك عرض واضح يمنحك فرصة لتصبحي شريكة مبيعات مع إيلا.
+            تسوقي من متجر إيلا، أضيفي المنتجات إلى السلة، وإذا كان هناك كود خصم منشور
+            في Firebase سيظهر لك تلقائيًا داخل السلة.
           </p>
 
           <div class="hero-actions">
             <a href="#products" class="btn btn-primary">تسوقي الآن</a>
-            <button id="openPartnerFromHero" class="btn btn-light">تفاصيل الشراكة</button>
+            <button id="cartBtnHero" class="btn btn-light">فتح السلة</button>
           </div>
         </div>
 
@@ -58,22 +57,6 @@
           <div class="mini-card">💄<span>ميكب</span></div>
           <div class="mini-card">🌹<span>عطور</span></div>
           <div class="mini-card">🎁<span>بوكسات</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="partner-banner" class="partner-banner-section">
-      <div class="container">
-        <div class="partner-banner">
-          <div>
-            <div class="partner-kicker">هل تريدين أن تصبحي شريكة مبيعات؟</div>
-            <h2>انضمي إلى Ella Founders 50</h2>
-            <p>
-              أول 50 شخص يشترون بقيمة 100,000 د.ع أو أكثر يمكنهم الدخول إلى برنامج
-              شركاء المبيعات لمدة 6 أشهر، مع كود خاص وعمولات ومزايا إضافية.
-            </p>
-          </div>
-          <button id="openPartnerBtn" class="btn btn-white">عرض التفاصيل</button>
         </div>
       </div>
     </section>
@@ -93,28 +76,6 @@
         <div id="productsGrid" class="products-grid"></div>
       </div>
     </section>
-
-    <section class="features-section">
-      <div class="container feature-grid">
-        <div class="feature-card">
-          <div class="section-kicker">ميزة المتجر</div>
-          <h3>تجربة شراء بسيطة</h3>
-          <p>الزبونة ترى المنتجات أولًا، ثم إن أرادت تدخل في عرض الشراكة من بانر واضح وسهل.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="section-kicker">ميزة الشراكة</div>
-          <h3>ربح من المبيعات</h3>
-          <p>بعد الانضمام، تحصل الشريكة على كود خاص ورابط يمكنها مشاركته لتحقيق عمولات.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="section-kicker">ميزة التطوير</div>
-          <h3>جاهز للتوسع لاحقًا</h3>
-          <p>يمكن لاحقًا إضافة تسجيل، لوحة شريكات، سلة متقدمة، ودفع وربط واتساب أو تيليجرام.</p>
-        </div>
-      </div>
-    </section>
   </main>
 
   <!-- Product Modal -->
@@ -123,46 +84,6 @@
     <div class="modal-box">
       <button class="modal-close" data-close="productModal">✕</button>
       <div id="productModalContent"></div>
-    </div>
-  </div>
-
-  <!-- Partner Modal -->
-  <div id="partnerModal" class="modal hidden">
-    <div class="modal-backdrop" data-close="partnerModal"></div>
-    <div class="modal-box large">
-      <button class="modal-close" data-close="partnerModal">✕</button>
-      <div class="partner-modal-content">
-        <div class="partner-modal-main">
-          <div class="section-kicker">تفاصيل برنامج الشراكة</div>
-          <h3>Ella Founders 50</h3>
-
-          <div id="partnerPoints" class="partner-points"></div>
-        </div>
-
-        <div class="partner-side-card">
-          <div class="side-kicker">بطاقة شريك مؤسس</div>
-          <div class="side-title">Ella Founders 50</div>
-          <div class="side-text">برنامج حصري لأول 50 شريك مبيعات</div>
-
-          <div class="side-stats">
-            <div class="side-stat">
-              <span>المدة</span>
-              <strong>6 أشهر</strong>
-            </div>
-            <div class="side-stat">
-              <span>الحد الأدنى</span>
-              <strong>100K</strong>
-            </div>
-          </div>
-
-          <div class="side-note">
-            العمولة ترتبط بالمبيعات التي تأتي من خلالك، ويمكن لاحقًا إضافة مستويات
-            مثل Silver و Gold و VIP.
-          </div>
-
-          <button class="btn btn-white btn-full">أريد الانضمام</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -183,16 +104,64 @@
           <strong id="cartTotal">0 د.ع</strong>
         </div>
 
-        <div id="cartPartnerNote" class="cart-note">
-          إذا وصل مجموع طلبك إلى 100,000 د.ع أو أكثر، يمكنك التقديم على عرض الشراكة.
-        </div>
+        <div id="discountBox" class="cart-note hidden"></div>
       </div>
 
       <div class="cart-actions">
         <button id="checkoutBtn" class="btn btn-primary btn-full">إتمام الطلب</button>
-        <button id="openPartnerFromCart" class="btn btn-light btn-full">مشاهدة تفاصيل الشراكة</button>
       </div>
     </aside>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkoutModal" class="modal hidden">
+    <div class="modal-backdrop" data-close="checkoutModal"></div>
+    <div class="modal-box">
+      <button class="modal-close" data-close="checkoutModal">✕</button>
+      <div class="checkout-content">
+        <div class="section-kicker">إتمام الطلب</div>
+        <h3 style="margin-top:8px;font-size:32px;font-weight:900;">بيانات الزبون</h3>
+
+        <form id="orderForm" class="order-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>الاسم الكامل</label>
+              <input type="text" id="customerName" required />
+            </div>
+
+            <div class="form-group">
+              <label>رقم الهاتف</label>
+              <input type="text" id="customerPhone" required />
+            </div>
+
+            <div class="form-group">
+              <label>المحافظة</label>
+              <input type="text" id="customerGovernorate" required />
+            </div>
+
+            <div class="form-group">
+              <label>المنطقة</label>
+              <input type="text" id="customerArea" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>تفاصيل إضافية</label>
+            <textarea id="customerDetails" rows="4" placeholder="ملاحظات، أقرب نقطة دالة، لون، قياس..."></textarea>
+          </div>
+
+          <div class="checkout-summary">
+            <div class="cart-total-row">
+              <span>إجمالي الطلب</span>
+              <strong id="checkoutTotal">0 د.ع</strong>
+            </div>
+            <div id="checkoutDiscountText" class="cart-note hidden"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">إرسال الطلب</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="app.js"></script>
