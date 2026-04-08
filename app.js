@@ -3,7 +3,9 @@ import {
   hasFirebaseConfig,
   ref,
   get,
-  child
+  child,
+  push,
+  set
 } from "./firebase-config.js";
 
 const fallbackProducts = [
@@ -12,9 +14,9 @@ const fallbackProducts = [
     name: "بوكس جلو إيلا",
     price: 100000,
     oldPrice: 120000,
-    desc: "الباقة المثالية لدخول برنامج شركاء المبيعات والحصول على مزايا المؤسسين.",
-    details: "بوكس مميز يجمع بين منتجات مختارة بعناية مع قيمة شراء تؤهلك للدخول إلى برنامج Ella Founders 50 إذا كنت من أول 50 شخص.",
-    badge: "يدخلك البرنامج",
+    desc: "بوكس مميز ومنتج أساسي داخل المتجر.",
+    details: "بوكس مميز يجمع بين منتجات مختارة بعناية.",
+    badge: "الأكثر طلبًا",
     category: "بوكسات",
     emoji: "✨",
     featured: true
@@ -24,113 +26,23 @@ const fallbackProducts = [
     name: "بوكس عناية يومية",
     price: 65000,
     oldPrice: 80000,
-    desc: "مجموعة أساسية للعناية اليومية بالبشرة بتغليف أنيق ومناسب للهدايا.",
-    details: "يشمل منتجات يومية للعناية والتنظيف والترطيب، مناسب كبداية ممتازة لكل عميلة.",
-    badge: "الأكثر طلبًا",
+    desc: "مجموعة أساسية للعناية اليومية بالبشرة.",
+    details: "يشمل منتجات يومية للعناية والتنظيف والترطيب.",
+    badge: "مميز",
     category: "بوكسات",
     emoji: "🧴",
-    featured: false
-  },
-  {
-    id: 3,
-    name: "بوكس ميكب فاخر",
-    price: 145000,
-    oldPrice: 170000,
-    desc: "منتجات مختارة بعناية للميكب والإطلالة اليومية مع لمسة فاخرة.",
-    details: "بوكس فاخر مناسب للهدايا أو للإطلالات الكاملة، ويمنح قيمة شراء عالية داخل المتجر.",
-    badge: "قيمة أعلى",
-    category: "بوكسات",
-    emoji: "💄",
-    featured: false
-  },
-  {
-    id: 4,
-    name: "سيروم فيتامين C",
-    price: 28000,
-    oldPrice: 35000,
-    desc: "سيروم يمنح البشرة إشراقة يومية ومظهرًا صحيًا ومتجددًا.",
-    details: "خيار ممتاز للعناية اليومية ولمظهر أكثر إشراقًا مع استخدام منتظم.",
-    badge: "عناية بالبشرة",
-    category: "عناية بالبشرة",
-    emoji: "🍊",
-    featured: false
-  },
-  {
-    id: 5,
-    name: "غسول رغوي ناعم",
-    price: 22000,
-    oldPrice: 27000,
-    desc: "غسول خفيف للاستخدام اليومي مع إحساس منعش ونظيف.",
-    details: "مناسب للاستخدام اليومي، يترك البشرة نظيفة ومنتعشة بملمس لطيف.",
-    badge: "لطيف يوميًا",
-    category: "عناية بالبشرة",
-    emoji: "🫧",
-    featured: false
-  },
-  {
-    id: 6,
-    name: "كريم ترطيب حريري",
-    price: 24000,
-    oldPrice: 30000,
-    desc: "ترطيب ناعم بملمس خفيف مناسب للاستخدام الصباحي والمسائي.",
-    details: "ترطيب يومي بملمس خفيف وسريع الامتصاص ومناسب للاستخدام المستمر.",
-    badge: "ترطيب",
-    category: "عناية بالبشرة",
-    emoji: "🤍",
-    featured: false
-  },
-  {
-    id: 7,
-    name: "روج إيلا مات",
-    price: 18000,
-    oldPrice: 23000,
-    desc: "لون ثابت ولمسة مات ناعمة تناسب الإطلالات اليومية.",
-    details: "درجة أنيقة تدوم بشكل جيد وتناسب الاستخدام اليومي والمناسبات الخفيفة.",
-    badge: "ميكب",
-    category: "ميكب",
-    emoji: "💋",
-    featured: false
-  },
-  {
-    id: 8,
-    name: "باليت ظلال ناعم",
-    price: 32000,
-    oldPrice: 39000,
-    desc: "تدرجات هادئة وعصرية مناسبة للنهار والمناسبات.",
-    details: "ألوان مرنة وسهلة الاستخدام بإطلالات متنوعة بين اليومية والناعمة والفخمة.",
-    badge: "ألوان مميزة",
-    category: "ميكب",
-    emoji: "🎨",
-    featured: false
-  },
-  {
-    id: 9,
-    name: "عطر روز لَش",
-    price: 48000,
-    oldPrice: 55000,
-    desc: "عطر نسائي بنفحات زهرية ولمسة فخمة تدوم طويلًا.",
-    details: "رائحة أنثوية جذابة بطابع زهري ولمسة فخمة مناسبة للهدايا والاستخدام الشخصي.",
-    badge: "عطور",
-    category: "عطور",
-    emoji: "🌹",
     featured: false
   }
 ];
 
 const fallbackSettings = {
-  partnerProgram: {
-    title: "Ella Founders 50",
-    subtitle: "برنامج حصري لأول 50 شريك مبيعات",
-    minimumPurchase: 100000,
-    duration: "6 أشهر",
-    points: [
-      "اشتري من إيلا بقيمة 100,000 د.ع أو أكثر",
-      "كوني من أول 50 شخص فقط داخل البرنامج",
-      "احصلي على كود خصم ورابط مشاركة خاص بك",
-      "عمولة على كل طلب مكتمل يأتي من خلالك",
-      "مدة الشراكة 6 أشهر مع مزايا إضافية وترقيات",
-      "يمكن تطويرك من Silver إلى Gold ثم VIP حسب الأداء"
-    ]
+  store: {
+    discount: {
+      enabled: false,
+      code: "",
+      percent: 0,
+      text: ""
+    }
   }
 };
 
@@ -148,31 +60,28 @@ const els = {
   categoryFilters: document.getElementById("categoryFilters"),
   loadingBox: document.getElementById("loadingBox"),
   cartBtn: document.getElementById("cartBtn"),
+  cartBtnHero: document.getElementById("cartBtnHero"),
   cartCount: document.getElementById("cartCount"),
   cartDrawer: document.getElementById("cartDrawer"),
   cartItems: document.getElementById("cartItems"),
   cartTotal: document.getElementById("cartTotal"),
-  cartPartnerNote: document.getElementById("cartPartnerNote"),
+  discountBox: document.getElementById("discountBox"),
   productModal: document.getElementById("productModal"),
   productModalContent: document.getElementById("productModalContent"),
-  partnerModal: document.getElementById("partnerModal"),
-  partnerPoints: document.getElementById("partnerPoints"),
-  openPartnerBtn: document.getElementById("openPartnerBtn"),
-  openPartnerFromHero: document.getElementById("openPartnerFromHero"),
-  openPartnerFromCart: document.getElementById("openPartnerFromCart"),
-  checkoutBtn: document.getElementById("checkoutBtn")
+  checkoutBtn: document.getElementById("checkoutBtn"),
+  checkoutModal: document.getElementById("checkoutModal"),
+  checkoutTotal: document.getElementById("checkoutTotal"),
+  checkoutDiscountText: document.getElementById("checkoutDiscountText"),
+  orderForm: document.getElementById("orderForm"),
+  customerName: document.getElementById("customerName"),
+  customerPhone: document.getElementById("customerPhone"),
+  customerGovernorate: document.getElementById("customerGovernorate"),
+  customerArea: document.getElementById("customerArea"),
+  customerDetails: document.getElementById("customerDetails")
 };
 
 function formatPrice(value) {
   return `${Number(value || 0).toLocaleString("en-US")} د.ع`;
-}
-
-function normalizePoints(points) {
-  if (Array.isArray(points)) return points;
-  if (points && typeof points === "object") {
-    return Object.values(points);
-  }
-  return fallbackSettings.partnerProgram.points;
 }
 
 function openModal(id) {
@@ -188,6 +97,26 @@ function closeModal(id) {
 function getFilteredProducts() {
   if (state.activeCategory === "الكل") return state.products;
   return state.products.filter((p) => p.category === state.activeCategory);
+}
+
+function getDiscountSettings() {
+  return state.settings?.store?.discount || fallbackSettings.store.discount;
+}
+
+function calculateCartTotal() {
+  return state.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+}
+
+function calculateDiscountAmount(total) {
+  const discount = getDiscountSettings();
+  if (!discount.enabled || !discount.percent) return 0;
+  return Math.round((total * Number(discount.percent)) / 100);
+}
+
+function calculateFinalTotal() {
+  const total = calculateCartTotal();
+  const discountAmount = calculateDiscountAmount(total);
+  return Math.max(total - discountAmount, 0);
 }
 
 function renderFilters() {
@@ -273,8 +202,6 @@ function renderProducts() {
 function showProductDetails(product) {
   if (!product || !els.productModalContent) return;
 
-  const minimum = state.settings?.partnerProgram?.minimumPurchase || 100000;
-
   els.productModalContent.innerHTML = `
     <div class="product-modal-grid">
       <div class="product-modal-image">${product.emoji || "🧴"}</div>
@@ -288,16 +215,6 @@ function showProductDetails(product) {
           <div class="price">${formatPrice(product.price)}</div>
           <div class="old-price">${formatPrice(product.oldPrice || 0)}</div>
         </div>
-
-        ${
-          product.featured
-            ? `
-          <div class="notice">
-            هذا المنتج يؤهلك للدخول إلى برنامج شركاء المبيعات إذا وصل مجموع شرائك إلى ${formatPrice(minimum)} وكنت من أول 50 شخص.
-          </div>
-        `
-            : ""
-        }
 
         <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
           <button id="modalAddToCart" class="btn btn-dark">أضف إلى السلة</button>
@@ -319,24 +236,6 @@ function showProductDetails(product) {
   });
 }
 
-function renderPartnerModal() {
-  if (!els.partnerPoints) return;
-
-  const program = state.settings?.partnerProgram || fallbackSettings.partnerProgram;
-  const points = normalizePoints(program.points);
-
-  els.partnerPoints.innerHTML = points
-    .map(
-      (point) => `
-      <div class="partner-point">
-        <div class="partner-check">✓</div>
-        <div>${point}</div>
-      </div>
-    `
-    )
-    .join("");
-}
-
 function addToCart(product) {
   if (!product) return;
 
@@ -353,7 +252,7 @@ function addToCart(product) {
 }
 
 function renderCart() {
-  if (!els.cartItems || !els.cartTotal || !els.cartPartnerNote || !els.cartCount) return;
+  if (!els.cartItems || !els.cartTotal || !els.cartCount || !els.discountBox) return;
 
   els.cartCount.textContent = state.cart.reduce((sum, item) => sum + item.qty, 0);
 
@@ -377,19 +276,41 @@ function renderCart() {
       .join("");
   }
 
-  const total = state.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  els.cartTotal.textContent = formatPrice(total);
+  const total = calculateCartTotal();
+  const finalTotal = calculateFinalTotal();
+  const discount = getDiscountSettings();
+  const discountAmount = calculateDiscountAmount(total);
 
-  const minimum = state.settings?.partnerProgram?.minimumPurchase || 100000;
+  els.cartTotal.textContent = formatPrice(finalTotal);
 
-  if (total >= minimum) {
-    els.cartPartnerNote.textContent =
-      "هذا الطلب مؤهل مبدئيًا لعرض الشراكة لأن مجموع السلة 100,000 د.ع أو أكثر.";
-    els.cartPartnerNote.classList.add("good");
+  if (discount.enabled && discount.code) {
+    els.discountBox.classList.remove("hidden");
+    els.discountBox.innerHTML = `
+      <strong>كود الخصم:</strong> ${discount.code}<br>
+      <strong>الخصم:</strong> ${discount.percent}%<br>
+      <strong>قيمة الخصم:</strong> ${formatPrice(discountAmount)}
+      ${discount.text ? `<br><strong>ملاحظة:</strong> ${discount.text}` : ""}
+    `;
   } else {
-    els.cartPartnerNote.textContent =
-      "إذا وصل مجموع طلبك إلى 100,000 د.ع أو أكثر، يمكنك التقديم على عرض الشراكة.";
-    els.cartPartnerNote.classList.remove("good");
+    els.discountBox.classList.add("hidden");
+    els.discountBox.innerHTML = "";
+  }
+
+  if (els.checkoutTotal) {
+    els.checkoutTotal.textContent = formatPrice(finalTotal);
+  }
+
+  if (els.checkoutDiscountText) {
+    if (discount.enabled && discount.code) {
+      els.checkoutDiscountText.classList.remove("hidden");
+      els.checkoutDiscountText.innerHTML = `
+        تم تطبيق كود الخصم <strong>${discount.code}</strong> بنسبة ${discount.percent}% 
+        وقيمة الخصم ${formatPrice(discountAmount)}
+      `;
+    } else {
+      els.checkoutDiscountText.classList.add("hidden");
+      els.checkoutDiscountText.innerHTML = "";
+    }
   }
 }
 
@@ -400,6 +321,7 @@ async function loadProductsFromRealtimeDB() {
     if (!snapshot.exists()) return fallbackProducts;
 
     const data = snapshot.val();
+
     const items = Object.values(data || {}).map((item, index) => ({
       id: item.id || index + 1,
       name: item.name || "",
@@ -429,17 +351,87 @@ async function loadSettingsFromRealtimeDB() {
     const data = snapshot.val();
 
     return {
-      partnerProgram: {
-        title: data.partnerProgram?.title || fallbackSettings.partnerProgram.title,
-        subtitle: data.partnerProgram?.subtitle || fallbackSettings.partnerProgram.subtitle,
-        minimumPurchase: Number(data.partnerProgram?.minimumPurchase || 100000),
-        duration: data.partnerProgram?.duration || "6 أشهر",
-        points: normalizePoints(data.partnerProgram?.points)
+      store: {
+        discount: {
+          enabled: Boolean(data.discount?.enabled),
+          code: data.discount?.code || "",
+          percent: Number(data.discount?.percent || 0),
+          text: data.discount?.text || ""
+        }
       }
     };
   } catch (error) {
     console.error("Realtime DB settings error:", error);
     return fallbackSettings;
+  }
+}
+
+async function submitOrder(event) {
+  event.preventDefault();
+
+  if (!state.cart.length) {
+    alert("السلة فارغة");
+    return;
+  }
+
+  const fullName = els.customerName?.value.trim();
+  const phone = els.customerPhone?.value.trim();
+  const governorate = els.customerGovernorate?.value.trim();
+  const area = els.customerArea?.value.trim();
+  const details = els.customerDetails?.value.trim();
+
+  if (!fullName || !phone || !governorate || !area) {
+    alert("يرجى ملء الاسم والرقم والمحافظة والمنطقة");
+    return;
+  }
+
+  const total = calculateCartTotal();
+  const discount = getDiscountSettings();
+  const discountAmount = calculateDiscountAmount(total);
+  const finalTotal = calculateFinalTotal();
+
+  const orderData = {
+    customer: {
+      fullName,
+      phone,
+      governorate,
+      area,
+      details: details || ""
+    },
+    items: state.cart.map((item) => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      qty: item.qty,
+      total: item.price * item.qty
+    })),
+    pricing: {
+      subtotal: total,
+      discountEnabled: discount.enabled,
+      discountCode: discount.code || "",
+      discountPercent: Number(discount.percent || 0),
+      discountAmount,
+      finalTotal
+    },
+    status: "new",
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    const orderRef = push(ref(db, "orders"));
+    await set(orderRef, orderData);
+
+    alert("تم إرسال الطلب بنجاح");
+
+    state.cart = [];
+    renderCart();
+
+    els.orderForm.reset();
+    closeModal("checkoutModal");
+    closeModal("cartDrawer");
+  } catch (error) {
+    console.error("Order save error:", error);
+    alert("حدث خطأ أثناء حفظ الطلب");
   }
 }
 
@@ -456,7 +448,6 @@ async function init() {
 
   renderFilters();
   renderProducts();
-  renderPartnerModal();
   renderCart();
 
   if (els.loadingBox) els.loadingBox.style.display = "none";
@@ -468,12 +459,17 @@ document.addEventListener("click", (e) => {
 });
 
 els.cartBtn?.addEventListener("click", () => openModal("cartDrawer"));
-els.openPartnerBtn?.addEventListener("click", () => openModal("partnerModal"));
-els.openPartnerFromHero?.addEventListener("click", () => openModal("partnerModal"));
-els.openPartnerFromCart?.addEventListener("click", () => openModal("partnerModal"));
+els.cartBtnHero?.addEventListener("click", () => openModal("cartDrawer"));
 
 els.checkoutBtn?.addEventListener("click", () => {
-  alert("هنا لاحقًا نربط الطلب مع واتساب أو تيليجرام أو Firebase.");
+  if (!state.cart.length) {
+    alert("السلة فارغة");
+    return;
+  }
+  renderCart();
+  openModal("checkoutModal");
 });
+
+els.orderForm?.addEventListener("submit", submitOrder);
 
 init();
